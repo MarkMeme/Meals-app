@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:meals_app/models/meal.dart';
 import 'package:meals_app/screens/categories_screen.dart';
 import 'package:meals_app/screens/meals_screen.dart';
+import 'package:meals_app/utils/dummy_data.dart';
+import 'package:meals_app/utils/favourites_meals.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -11,31 +14,39 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen> {
   int currentIndex = 0;
-  Widget selectedScreen = const CategoriesScreen();
-  String currentTitle = 'Categorirs';
-
   void onSelecting(int index) {
     setState(() {
       currentIndex = index;
     });
+    setState(() {});
   }
+
+  List<Meal> favourets = favoutitesMeals;
 
   @override
   Widget build(BuildContext context) {
+    Widget selectedScreen = const CategoriesScreen();
+    String currentTitle = 'Categories';
     if (currentIndex == 1) {
       currentTitle = 'My Favourites Meals';
       selectedScreen = MealsScreen(
-        meals: [],
-        title: currentTitle,
+        meals: favourets,
       );
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(currentTitle),
+        centerTitle: true,
+        title: Text(
+          currentTitle,
+        ),
       ),
       body: selectedScreen,
       bottomNavigationBar: BottomNavigationBar(
+        unselectedItemColor: Colors.white,
+        type: BottomNavigationBarType.shifting,
+        currentIndex: currentIndex,
         onTap: (index) => onSelecting(index),
+        selectedItemColor: Theme.of(context).colorScheme.primary,
         items: const [
           BottomNavigationBarItem(
               icon: Icon(Icons.set_meal, size: 25), label: 'Categories'),
@@ -44,7 +55,7 @@ class _TabsScreenState extends State<TabsScreen> {
                 Icons.star,
                 size: 25,
               ),
-              label: 'Categories')
+              label: 'Favourites')
         ],
       ),
     );
