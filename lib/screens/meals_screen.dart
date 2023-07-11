@@ -48,6 +48,7 @@ class MealsScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: Text(title!),
         ),
         body: content,
