@@ -4,6 +4,7 @@ import 'package:meals_app/screens/categories_screen.dart';
 import 'package:meals_app/screens/meals_screen.dart';
 import 'package:meals_app/utils/dummy_data.dart';
 import 'package:meals_app/utils/favourites_meals.dart';
+import 'package:meals_app/widgets/main_drawer.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -23,6 +24,12 @@ class _TabsScreenState extends State<TabsScreen> {
 
   List<Meal> favourets = favoutitesMeals;
 
+  void setScreen(String identifier) {
+    if (identifier == 'meals') {
+      Navigator.of(context).pop();
+    } else {}
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget selectedScreen = const CategoriesScreen();
@@ -34,6 +41,7 @@ class _TabsScreenState extends State<TabsScreen> {
       );
     }
     return Scaffold(
+      drawer: MainDrawer(onSetScreen: setScreen),
       appBar: AppBar(
         centerTitle: true,
         title: Text(
