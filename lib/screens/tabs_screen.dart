@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals_app/models/meal.dart';
+import 'package:meals_app/providers/favorites_provider.dart';
+import 'package:meals_app/providers/meals_provider.dart';
 import 'package:meals_app/screens/categories_screen.dart';
 import 'package:meals_app/screens/filters_screen.dart';
 import 'package:meals_app/screens/meals_screen.dart';
-import 'package:meals_app/utils/dummy_data.dart';
-import 'package:meals_app/utils/favourites_meals.dart';
 import 'package:meals_app/widgets/main_drawer.dart';
 
-class TabsScreen extends StatefulWidget {
+import '../providers/filters_provider.dart';
+
+class TabsScreen extends ConsumerStatefulWidget {
   const TabsScreen({super.key});
 
   @override
-  State<TabsScreen> createState() => _TabsScreenState();
+  ConsumerState<TabsScreen> createState() => _TabsScreenState();
 }
 
 Map<Filter, bool> kSelectedFilters = {
@@ -21,8 +24,7 @@ Map<Filter, bool> kSelectedFilters = {
   Filter.vegan: false,
 };
 
-class _TabsScreenState extends State<TabsScreen> {
-  Map<Filter, bool> selectedFilters = kSelectedFilters;
+class _TabsScreenState extends ConsumerState<TabsScreen> {
   int currentIndex = 0;
   void onSelecting(int index) {
     setState(() {
@@ -31,48 +33,28 @@ class _TabsScreenState extends State<TabsScreen> {
     setState(() {});
   }
 
-  List<Meal> favourets = favoutitesMeals;
-
   void setScreen(String identifier) async {
     Navigator.of(context).pop();
     if (identifier == 'meals') {
     } else {
-      final result =
-          await Navigator.of(context).push<Map<Filter, bool>>(MaterialPageRoute(
-        builder: (context) => FiltersScreen(currentFilters: selectedFilters),
+      await Navigator.of(context).push<Map<Filter, bool>>(MaterialPageRoute(
+        builder: (context) => FiltersScreen(),
       ));
-      setState(() {
-        selectedFilters = result ?? kSelectedFilters;
-        //print(selectedFilters);
-      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<Meal> availableMeals = dummyMeals.where((element) {
-      if (selectedFilters[Filter.vegetarian]! && !element.isVegetarian) {
-        return false;
-      }
-      if (selectedFilters[Filter.vegan]! && !element.isVegan) {
-        return false;
-      }
-      if (selectedFilters[Filter.gluetenFree]! && !element.isGlutenFree) {
-        return false;
-      }
-      if (selectedFilters[Filter.lactoseFree]! && !element.isLactoseFree) {
-        return false;
-      }
-      return true;
-    }).toList();
+    final availableMeals = ref.watch(filterMealProvider);
     Widget selectedScreen = CategoriesScreen(
       availableMeals: availableMeals,
     );
+    final favoriteMeals = ref.watch(favoriteMealsProvider);
     String currentTitle = 'Categories';
     if (currentIndex == 1) {
       currentTitle = 'My Favourites Meals';
       selectedScreen = MealsScreen(
-        meals: favourets,
+        meals: favoriteMeals,
       );
     }
     return Scaffold(
