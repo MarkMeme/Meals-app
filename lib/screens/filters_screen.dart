@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals_app/providers/filters_provider.dart';
 
 class FiltersScreen extends ConsumerWidget {
+  const FiltersScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activeFilters = ref.watch(filterProvider);
